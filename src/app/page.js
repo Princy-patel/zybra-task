@@ -12,5 +12,7 @@ export default function Home() {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <div>Sorry There was an Error</div>;
 
-  return <h1>Hello</h1>;
+  return (
+    <h1>Hello</h1>
+  );
 }
