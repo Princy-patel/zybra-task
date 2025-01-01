@@ -12,7 +12,7 @@ async function getData() {
   }
 }
 
-export default async function getMovies() {
+export default async function getUsers() {
   const data = await getData();
   return data;
 }

@@ -1,11 +1,11 @@
 "use client";
 
-import getMovies from "@/getUser";
+import getUsers from "@/getUser";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const { data, isLoading, isError } = useQuery({
-    queryFn: async () => await getMovies(),
+    queryFn: async () => await getUsers(),
     queryKey: ["users"],
   });
 
