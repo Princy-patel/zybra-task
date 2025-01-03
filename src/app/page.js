@@ -110,11 +110,69 @@ export default function Home() {
     onPaginationChange: setPagination,
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <>
+        <div className="overflow-x-auto bg-white shadow-md rounded-md animate-pulse">
+          <table className="min-w-full divide-y divide-gray-300">
+            <thead>
+              <tr>
+                <th className="h-10 bg-gray-200 rounded w-1/5"></th>
+                <th className="h-10 bg-gray-200 rounded w-1/5"></th>
+                <th className="h-10 bg-gray-200 rounded w-1/5"></th>
+                <th className="h-10 bg-gray-200 rounded w-1/5"></th>
+                <th className="h-10 bg-gray-200 rounded w-1/5"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td className="h-10 bg-gray-200 rounded w-full"></td>
+                <td className="h-10 bg-gray-200 rounded w-full"></td>
+                <td className="h-10 bg-gray-200 rounded w-full"></td>
+                <td className="h-10 bg-gray-200 rounded w-full"></td>
+                <td className="h-10 bg-gray-200 rounded w-full"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
+          <div className="flex items-center mb-4 sm:mb-0 animate-pulse">
+            <span className="h-4 bg-gray-200 rounded w-24 mx-2"></span>
+            <div className="h-10 bg-gray-200 rounded w-24"></div>
+          </div>
+
+          <div className="flex items-center space-x-2 animate-pulse">
+            <div className="h-10 bg-gray-200 w-10 rounded"></div>
+            <div className="h-10 bg-gray-200 w-10 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded w-24"></div>
+            <div className="h-10 bg-gray-200 w-10 rounded"></div>
+            <div className="h-10 bg-gray-200 w-10 rounded"></div>
+          </div>
+        </div>
+      </>
+    );
+
   if (isError) return <div>Sorry, there was an Error</div>;
 
   return (
     <div className="flex flex-col min-h-screen max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      {/* Hero section Start*/}
+      <section className="bg-gray-100 py-12 my-6">
+        <div className="container mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Welcome to User Management
+          </h2>
+          <p className="text-gray-700 mb-6">
+            Manage your user data efficiently with sorting, searching,
+            filtering, and pagination.
+          </p>
+          <Button>Learn More</Button>
+        </div>
+      </section>
+      {/* Hero section End*/}
+
       <div className="mb-4 relative">
         <Input
           placeholder="Search..."
