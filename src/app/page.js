@@ -22,6 +22,23 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const columnHelper = createColumnHelper();
 
@@ -99,27 +116,25 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div className="mb-4 relative">
-        <input
+        <Input
+          placeholder="Search..."
           value={globalFilter || ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          className="pl-10"
         />
         <Search
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
           size={20}
         />
       </div>
+
       <div className="overflow-x-auto bg-white shadow-md rounded-md">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-                  >
+                  <TableHead key={header.id}>
                     <div
                       {...{
                         className: header.column.getCanSort()
@@ -141,100 +156,82 @@ export default function Home() {
                         size={14}
                       />
                     </div>
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-
-          <tbody className="bg-white divide-y divide-gray-200">
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50">
+              <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                  >
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-700">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
         <div className="flex items-center mb-4 sm:mb-0">
-          <span className="mr-2">Items per page</span>
-
-          <select
-            className="border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-            }}
+          <span className="mr-2">Items per page:</span>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value) => table.setPageSize(Number(value))}
           >
-            {[5, 10, 50, 100].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 50].map((size) => (
+                <SelectItem key={size} value={`${size}`}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex items-center space-x-2">
-          <button
-            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-            onClick={() => table.setPageIndex(0)}
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(0)}
           >
             <ChevronsLeft size={20} />
-          </button>
-
-          <button
-            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-            onClick={() => table.previousPage()}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
           >
             <ChevronDown size={20} />
-          </button>
-
-          <span className="flex items-center">
-            <input
-              min={1}
-              max={table.getPageCount()}
-              type="number"
-              value={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value
-                  ? Math.max(
-                      1,
-                      Math.min(Number(e.target.value), table.getPageCount())
-                    ) - 1
-                  : 0;
-                table.setPageIndex(page);
-              }}
-              className="w-16 p-2 rounded-md border border-gray-300 text-center"
-            />
-            <span className="ml-1">of {table.getPageCount()}</span>
+          </Button>
+          <span>
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
           </span>
-
-          <button
-            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-            onClick={() => table.nextPage()}
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
           >
             <ChevronDown size={20} />
-          </button>
-
-          <button
-            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!table.getCanNextPage()}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           >
             <ChevronsRight size={20} />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
