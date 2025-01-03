@@ -9,8 +9,18 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Mail, Phone, Search, User } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  ChevronsLeft,
+  ChevronsRight,
+  Mail,
+  Phone,
+  Search,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 
 const columnHelper = createColumnHelper();
@@ -56,6 +66,10 @@ const columns = [
 export default function Home() {
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
 
   const { data, isLoading, isError } = useQuery({
     queryFn: async () => await getUsers(),
@@ -68,22 +82,15 @@ export default function Home() {
     state: {
       sorting,
       globalFilter,
+      pagination,
     },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
-    filterFns: {
-      text: (rows, columnId, filterValue) => {
-        return rows.filter((row) => {
-          const rowValue = row.getValue(columnId);
-          return rowValue != null
-            ? String(rowValue).toLowerCase().includes(filterValue.toLowerCase())
-            : false;
-        });
-      },
-    },
+    onPaginationChange: setPagination,
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -155,6 +162,80 @@ export default function Home() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-700">
+        <div className="flex items-center mb-4 sm:mb-0">
+          <span className="mr-2">Items per page</span>
+
+          <select
+            className="border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+          >
+            {[5, 10, 50, 100].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button
+            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronsLeft size={20} />
+          </button>
+
+          <button
+            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronDown size={20} />
+          </button>
+
+          <span className="flex items-center">
+            <input
+              min={1}
+              max={table.getPageCount()}
+              type="number"
+              value={table.getState().pagination.pageIndex + 1}
+              onChange={(e) => {
+                const page = e.target.value
+                  ? Math.max(
+                      1,
+                      Math.min(Number(e.target.value), table.getPageCount())
+                    ) - 1
+                  : 0;
+                table.setPageIndex(page);
+              }}
+              className="w-16 p-2 rounded-md border border-gray-300 text-center"
+            />
+            <span className="ml-1">of {table.getPageCount()}</span>
+          </span>
+
+          <button
+            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronDown size={20} />
+          </button>
+
+          <button
+            className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronsRight size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
