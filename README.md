@@ -7,7 +7,7 @@ A simple web application for managing user data fetched from a public API, built
 
 ## Live Demo
 
-Hosted on Vercel: Live Link
+Hosted on Vercel: https://zybra-task-black.vercel.app/
 
 
 ## Features
@@ -48,4 +48,4 @@ npm run dev
 ```
 4. Open the app in your browser at http://localhost:3000.
 
-    
+## Thank you for checking out this project!
